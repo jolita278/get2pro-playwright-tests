@@ -16,7 +16,7 @@ test.describe("Get2Pro search", () => {
     await expect(searchInput).toBeVisible();
     await expect(searchInput).toBeEditable();
 
-    await searchInput.fill("Compound Bow Cam Holder");
+    await searchInput.pressSequentially("Compound Bow Cam Holder");
     await expect(searchInput).toHaveValue("Compound Bow Cam Holder");
 
     await searchModal.getByRole("button", { name: "Search button" }).click();
@@ -53,7 +53,16 @@ test.describe("Get2Pro search", () => {
     const searchInput = searchModal.getByRole("combobox", {
       name: "Search for...",
     });
-    await searchInput.fill("Skriemulinio lanko skriemulio laikiklis");
+    await expect(searchInput).toBeVisible();
+    await expect(searchInput).toBeEditable();
+
+    await searchInput.pressSequentially(
+      "Skriemulinio lanko skriemulio laikiklis",
+    );
+    await expect(searchInput).toHaveValue(
+      "Skriemulinio lanko skriemulio laikiklis",
+    );
+
     await searchModal.getByRole("button", { name: "Search button" }).click();
 
     await expect(page).toHaveURL(
