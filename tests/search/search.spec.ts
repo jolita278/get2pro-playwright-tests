@@ -14,6 +14,7 @@ test.describe("Get2Pro search", () => {
     await expect(searchInput).toBeVisible();
     await expect(searchInput).toBeEditable();
 
+    await searchInput.click();
     await searchInput.pressSequentially("Compound Bow Cam Holder");
     await expect(searchInput).toHaveValue("Compound Bow Cam Holder");
 
@@ -57,6 +58,7 @@ test.describe("Get2Pro search", () => {
     await expect(searchInput).toBeVisible();
     await expect(searchInput).toBeEditable();
 
+    await searchInput.click();
     await searchInput.pressSequentially(
       "Skriemulinio lanko skriemulio laikiklis",
     );
