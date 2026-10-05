@@ -1,18 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { acceptCookies } from "../helpers/cookies";
-
-interface LocalBarcodeResult {
-  rawValue: string;
-}
-
-interface LocalBarcodeDetector {
-  detect(source: ImageBitmap): Promise<LocalBarcodeResult[]>;
-}
-
-declare const BarcodeDetector: {
-  new (options?: { formats?: "qr_code"[] }): LocalBarcodeDetector;
-  getSupportedFormats(): Promise<string[]>;
-};
+import jsQR from "jsqr";
 
 test.describe("Get2Pro Support QR codes", () => {
   test("QA12-001: verify Support QR codes match their payment links", async ({
@@ -40,16 +28,6 @@ test.describe("Get2Pro Support QR codes", () => {
 
     await expect(donationWidgets).toHaveCount(2);
 
-    const decodingSupport = await page.evaluate(async () => {
-      const available = typeof BarcodeDetector !== "undefined";
-      const supportsQr = available
-        ? (await BarcodeDetector.getSupportedFormats()).includes("qr_code")
-        : false;
-      return { available, supportsQr };
-    });
-    expect(decodingSupport.available).toBe(true);
-    expect(decodingSupport.supportsQr).toBe(true);
-
     const decodedValues: string[] = [];
     for (const widget of await donationWidgets.all()) {
       const image = widget.locator("img");
@@ -59,25 +37,58 @@ test.describe("Get2Pro Support QR codes", () => {
       });
       await expect(paymentLink).toHaveCount(1);
 
-      const decoded = await image.evaluate(async (img) => {
-        if (!(img instanceof HTMLImageElement)) {
-          throw new TypeError("Expected the QR code image element");
-        }
-        const detector = new BarcodeDetector({ formats: ["qr_code"] });
-        const bitmap = await createImageBitmap(img);
-        try {
-          return (await detector.detect(bitmap)).map((code) => code.rawValue);
-        } finally {
-          bitmap.close();
-        }
-      });
-      expect(decoded).toHaveLength(1);
+      const qrImage = await image.screenshot();
 
-      const decodedUrl = new URL(decoded[0]);
+      const decoded = await page.evaluate(
+        async ({ imageBytes }) => {
+          const blob = new Blob([new Uint8Array(imageBytes)]);
+          const bitmap = await createImageBitmap(blob);
+
+          const canvas = document.createElement("canvas");
+          canvas.width = bitmap.width;
+          canvas.height = bitmap.height;
+
+          const context = canvas.getContext("2d");
+          if (!context) {
+            throw new Error("Could not create canvas context");
+          }
+
+          context.drawImage(bitmap, 0, 0);
+          bitmap.close();
+
+          const imageData = context.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height,
+          );
+
+          return {
+            data: Array.from(imageData.data),
+            width: imageData.width,
+            height: imageData.height,
+          };
+        },
+        { imageBytes: [...qrImage] },
+      );
+
+      const qrCode = jsQR(
+        new Uint8ClampedArray(decoded.data),
+        decoded.width,
+        decoded.height,
+      );
+
+      expect(qrCode).not.toBeNull();
+
+      const decodedValue = qrCode!.data;
+
+      const decodedUrl = new URL(decodedValue);
       expect(decodedUrl.hostname).toBe("pi.swedbank.com");
       expect(decodedUrl.pathname).toBe("/pr");
-      await expect(paymentLink).toHaveAttribute("href", decoded[0]);
-      decodedValues.push(decoded[0]);
+
+      await expect(paymentLink).toHaveAttribute("href", decodedValue);
+
+      decodedValues.push(decodedValue);
     }
 
     expect(new Set(decodedValues).size).toBe(2);
