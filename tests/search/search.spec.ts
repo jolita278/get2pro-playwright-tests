@@ -9,13 +9,12 @@ test.describe("Get2Pro search", () => {
 
     await page.getByRole("button", { name: "Search", exact: true }).click();
     const searchModal = page.getByRole("dialog", { name: "Search modal" });
-    const searchInput = searchModal.getByRole("combobox", {
-      name: "Search for...",
-    });
+    const searchInput = searchModal.getByPlaceholder("Start typing to search");
 
     await expect(searchInput).toBeVisible();
     await expect(searchInput).toBeEditable();
 
+    await searchInput.click();
     await searchInput.pressSequentially("Compound Bow Cam Holder");
     await expect(searchInput).toHaveValue("Compound Bow Cam Holder");
 
@@ -48,14 +47,18 @@ test.describe("Get2Pro search", () => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto("/lt/");
 
-    await page.getByRole("button", { name: "Search", exact: true }).click();
+    await page.getByRole("button", { name: "Paieška", exact: true }).click();
+
     const searchModal = page.getByRole("dialog", { name: "Search modal" });
-    const searchInput = searchModal.getByRole("combobox", {
-      name: "Search for...",
-    });
+
+    const searchInput = searchModal.getByPlaceholder(
+      "Pradėkite rašyti norėdami ieškoti",
+    );
+
     await expect(searchInput).toBeVisible();
     await expect(searchInput).toBeEditable();
 
+    await searchInput.click();
     await searchInput.pressSequentially(
       "Skriemulinio lanko skriemulio laikiklis",
     );
