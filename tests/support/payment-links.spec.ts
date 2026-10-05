@@ -9,11 +9,12 @@ test.describe("Get2Pro donation payment links", () => {
 
     await acceptCookies(page);
 
-    const supportSection = page
-      .getByRole("heading", { name: "Support us", level: 2 })
-      .locator("..")
-      .locator("..")
-      .locator("..");
+    const supportSection = page.locator("section").filter({
+      has: page.getByRole("heading", {
+        name: "Support us",
+        level: 2,
+      }),
+    });
     await expect(supportSection).toBeVisible();
 
     const supportLinks = await supportSection.getByRole("link").all();

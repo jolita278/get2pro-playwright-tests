@@ -22,13 +22,16 @@ test.describe("Get2Pro Support QR codes", () => {
 
     await acceptCookies(page);
 
-    const supportSection = page
-      .getByRole("heading", { name: "Support us", level: 2 })
-      .locator("..")
-      .locator("..")
-      .locator("..");
-    const paymentArea = supportSection.locator(".elementor-element-b1fac6e");
-    const donationWidgets = paymentArea
+    const supportSection = page.locator("section").filter({
+      has: page.getByRole("heading", {
+        name: "Support us",
+        level: 2,
+      }),
+    });
+
+    await expect(supportSection).toBeVisible();
+
+    const donationWidgets = supportSection
       .locator(".elementor-widget-text-editor")
       .filter({ has: page.locator("img") })
       .filter({
