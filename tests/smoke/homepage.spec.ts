@@ -61,10 +61,8 @@ test.describe("Get2Pro homepage smoke tests @smoke", () => {
   test("HOME-005: open the Products page from the homepage", async ({
     page,
   }) => {
-    const topProductsSection = page
-      .getByRole("heading", { name: "Top Products", level: 2 })
-      .locator("..")
-      .locator("..");
+    const topProductsSection = page.locator("#top-products");
+    await expect(topProductsSection).toBeVisible();
     await topProductsSection
       .getByRole("link", { name: "View All", exact: true })
       .click();
@@ -108,13 +106,8 @@ test.describe("Get2Pro homepage smoke tests @smoke", () => {
   test("HOME-008: open the News & Updates page from the homepage", async ({
     page,
   }) => {
-    const newsSection = page
-      .getByRole("heading", {
-        name: "Latest from the News & Updates",
-        level: 2,
-      })
-      .locator("..")
-      .locator("..");
+    const newsSection = page.locator("#latest-news");
+    await expect(newsSection).toBeVisible();
     await newsSection
       .getByRole("link", { name: "View All", exact: true })
       .click();
