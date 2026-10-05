@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { acceptCookies } from "../helpers/cookies";
 
 test.describe("Get2Pro News navigation", () => {
   test("QA16-001: open a News article from the News & Updates page", async ({
@@ -6,13 +7,7 @@ test.describe("Get2Pro News navigation", () => {
   }) => {
     await page.goto("/news-and-updates/");
 
-    const acceptCookies = page.getByRole("button", {
-      name: "Accept",
-      exact: true,
-    });
-    if (await acceptCookies.isVisible()) {
-      await acceptCookies.click();
-    }
+    await acceptCookies(page);
 
     await expect(
       page.getByRole("heading", { name: "News & Updates", level: 1 }),

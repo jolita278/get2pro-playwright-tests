@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { acceptCookies } from "../helpers/cookies";
 
 interface LocalBarcodeResult {
   rawValue: string;
@@ -19,13 +20,7 @@ test.describe("Get2Pro Support QR codes", () => {
   }) => {
     await page.goto("/");
 
-    const acceptCookies = page.getByRole("button", {
-      name: "Accept",
-      exact: true,
-    });
-    if (await acceptCookies.isVisible()) {
-      await acceptCookies.click();
-    }
+    await acceptCookies(page);
 
     const supportSection = page
       .getByRole("heading", { name: "Support us", level: 2 })

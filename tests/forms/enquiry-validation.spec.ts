@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { acceptCookies } from "../helpers/cookies";
 
 const productUrl = "/product/compound-bow-cam-holder/";
 const requiredMessage = "This field is required.";
@@ -6,13 +7,7 @@ const requiredMessage = "This field is required.";
 async function openEnquiryForm(page: import("@playwright/test").Page) {
   await page.goto(productUrl);
 
-  const acceptCookies = page.getByRole("button", {
-    name: "Accept",
-    exact: true,
-  });
-  if (await acceptCookies.isVisible()) {
-    await acceptCookies.click();
-  }
+  await acceptCookies(page);
 
   const descriptionPanel = page.getByRole("tabpanel", {
     name: "Description",

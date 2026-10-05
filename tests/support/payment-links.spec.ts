@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { acceptCookies } from "../helpers/cookies";
 
 test.describe("Get2Pro donation payment links", () => {
   test("QA11-001: validate current €5 and €10 Swedbank payment links", async ({
@@ -6,13 +7,7 @@ test.describe("Get2Pro donation payment links", () => {
   }) => {
     await page.goto("/");
 
-    const acceptCookies = page.getByRole("button", {
-      name: "Accept",
-      exact: true,
-    });
-    if (await acceptCookies.isVisible()) {
-      await acceptCookies.click();
-    }
+    await acceptCookies(page);
 
     const supportSection = page
       .getByRole("heading", { name: "Support us", level: 2 })

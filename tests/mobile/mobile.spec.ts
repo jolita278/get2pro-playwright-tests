@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { acceptCookies } from "../helpers/cookies";
 
 test.use({
   viewport: {
@@ -6,17 +7,6 @@ test.use({
     height: 844,
   },
 });
-
-async function acceptCookies(page: import("@playwright/test").Page) {
-  const acceptButton = page.getByRole("button", {
-    name: "Accept",
-    exact: true,
-  });
-
-  if (await acceptButton.isVisible()) {
-    await acceptButton.click();
-  }
-}
 
 test.describe("Get2Pro mobile coverage", () => {
   test("QA21-001: homepage displays key content on mobile", async ({

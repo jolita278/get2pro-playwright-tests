@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { acceptCookies } from "../helpers/cookies";
 
 test.describe("Get2Pro language switching @smoke", () => {
   test("QA7-001: switch the Welcome page from English to Lithuanian and back", async ({
@@ -6,13 +7,7 @@ test.describe("Get2Pro language switching @smoke", () => {
   }) => {
     await page.goto("/");
 
-    const acceptCookies = page.getByRole("button", {
-      name: "Accept",
-      exact: true,
-    });
-    if (await acceptCookies.isVisible()) {
-      await acceptCookies.click();
-    }
+    await acceptCookies(page);
 
     await expect(page).toHaveURL(/\/$/);
     await expect(
@@ -66,13 +61,7 @@ test.describe("Get2Pro language switching @smoke", () => {
   }) => {
     await page.goto("/product/compound-bow-cam-holder/");
 
-    const acceptCookies = page.getByRole("button", {
-      name: "Accept",
-      exact: true,
-    });
-    if (await acceptCookies.isVisible()) {
-      await acceptCookies.click();
-    }
+    await acceptCookies(page);
 
     await expect(page).toHaveURL(/\/product\/compound-bow-cam-holder\/$/);
     await expect(

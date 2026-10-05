@@ -1,16 +1,11 @@
 import { expect, test } from "@playwright/test";
+import { acceptCookies } from "../helpers/cookies";
 
 test.describe("Get2Pro footer navigation", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
 
-    const acceptCookies = page.getByRole("button", {
-      name: "Accept",
-      exact: true,
-    });
-    if (await acceptCookies.isVisible()) {
-      await acceptCookies.click();
-    }
+    await acceptCookies(page);
   });
 
   test("QA6-001: open Ordering & Returns from the footer", async ({ page }) => {

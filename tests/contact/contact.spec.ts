@@ -1,18 +1,12 @@
 import { expect, test } from "@playwright/test";
+import { acceptCookies } from "../helpers/cookies";
 
 const contactUrl = "/contact/";
 
 async function openContactPage(page: import("@playwright/test").Page) {
   await page.goto(contactUrl);
 
-  const acceptCookies = page.getByRole("button", {
-    name: "Accept",
-    exact: true,
-  });
-
-  if (await acceptCookies.isVisible()) {
-    await acceptCookies.click();
-  }
+  await acceptCookies(page);
 }
 
 test.describe("Get2Pro Contact page", () => {

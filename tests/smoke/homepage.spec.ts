@@ -1,16 +1,11 @@
 import { expect, test } from "@playwright/test";
+import { acceptCookies } from "../helpers/cookies";
 
 test.describe("Get2Pro homepage smoke tests @smoke", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
 
-    const acceptCookies = page.getByRole("button", {
-      name: "Accept",
-      exact: true,
-    });
-    if (await acceptCookies.isVisible()) {
-      await acceptCookies.click();
-    }
+    await acceptCookies(page);
   });
 
   test("HOME-001: welcome page loads and main content is visible", async ({
