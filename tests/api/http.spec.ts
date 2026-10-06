@@ -1,12 +1,5 @@
 import { expect, test } from "@playwright/test";
 
-test.use({
-  extraHTTPHeaders: {
-    "User-Agent":
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
-  },
-});
-
 const publicPages = [
   "/",
   "/products/",
@@ -18,24 +11,25 @@ const publicPages = [
 
 test.describe("Get2Pro HTTP checks", () => {
   test("QA20-001: public pages return successful HTML responses", async ({
-    request,
+    page,
   }) => {
     for (const url of publicPages) {
-      const response = await request.get(url);
+      const response = await page.goto(url);
 
-      expect(response.status(), `${url} should return HTTP 200`).toBe(200);
+      expect(response, `${url} should return a response`).not.toBeNull();
+      expect(response!.status(), `${url} should return HTTP 200`).toBe(200);
 
       expect(
-        response.headers()["content-type"],
+        response!.headers()["content-type"],
         `${url} should return HTML`,
       ).toContain("text/html");
     }
   });
+  test("QA20-002: unknown page returns HTTP 404", async ({ page }) => {
+    const response = await page.goto("/this-page-does-not-exist/");
 
-  test("QA20-002: unknown page returns HTTP 404", async ({ request }) => {
-    const response = await request.get("/this-page-does-not-exist/");
-
-    expect(response.status()).toBe(404);
-    expect(response.headers()["content-type"]).toContain("text/html");
+    expect(response).not.toBeNull();
+    expect(response!.status()).toBe(404);
+    expect(response!.headers()["content-type"]).toContain("text/html");
   });
 });

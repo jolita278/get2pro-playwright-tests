@@ -91,4 +91,40 @@ test.describe("Get2Pro search", () => {
       }),
     ).toBeVisible();
   });
+
+  test("QA8-003 Search with no matching results", async ({ page }) => {
+    const searchTerm = "no-such-get2pro-product-987654";
+
+    await page.goto("/");
+
+    await page.getByRole("button", { name: "Search" }).click();
+
+    const searchModal = page.getByRole("dialog", { name: "Search modal" });
+    await expect(searchModal).toBeVisible();
+
+    const searchInput = searchModal.getByPlaceholder("Start typing to search");
+
+    await searchInput.click();
+    await searchInput.pressSequentially(searchTerm);
+    await expect(searchInput).toHaveValue(searchTerm);
+
+    await searchModal.getByRole("button", { name: "Search button" }).click();
+
+    await expect(page).toHaveURL(
+      new RegExp(`\\?s=${searchTerm}.*ct_post_type=`),
+    );
+
+    await expect(
+      page.getByRole("heading", {
+        name: `Search Results for ${searchTerm}`,
+        level: 1,
+      }),
+    ).toBeVisible();
+
+    await expect(
+      page.getByText(
+        "Sorry, but nothing matched your search terms. Please try again with some different keywords.",
+      ),
+    ).toBeVisible();
+  });
 });
