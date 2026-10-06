@@ -47,7 +47,7 @@ test.describe("Get2Pro search", () => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto("/lt/");
 
-    await page.getByRole("button", { name: "Paieška", exact: true }).click();
+    await page.getByRole("button", { name: "Search", exact: true }).click();
 
     const searchModal = page.getByRole("dialog", { name: "Search modal" });
 
