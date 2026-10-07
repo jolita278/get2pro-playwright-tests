@@ -4,8 +4,8 @@ End-to-end test automation project for the Get2Pro website, built with
 Playwright and TypeScript.
 
 The project covers critical user journeys, navigation, search, product
-pages, payment links, QR codes, form validation, responsive behaviour,
-and HTTP response checks.
+pages, payment links, QR codes, form validation, cookie consent and
+analytics behaviour, responsive behaviour, and HTTP response checks.
 
 ## Tech Stack
 
@@ -32,6 +32,11 @@ The automated test suite includes:
 - Instagram embed validation
 - Mobile viewport coverage
 - 404 page handling
+- Cookie consent and analytics behaviour
+  - Analytics remains disabled when consent is denied
+  - Google Analytics cookies are created after analytics consent is granted
+  - Custom consent preferences are persisted correctly
+  - Previously granted analytics consent can be withdrawn
 - HTTP response checks for public pages
 
 Some production flows are intentionally not automated when they would
@@ -84,7 +89,8 @@ Run TypeScript type checking:
 npm run typecheck
 ```
 
-Run all quality checks before executing the test suite:
+```md
+Before committing changes, run the full validation:
 
 ```bash
 npm run format:check

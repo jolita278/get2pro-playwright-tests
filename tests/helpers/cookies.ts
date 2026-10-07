@@ -10,3 +10,14 @@ export async function acceptCookies(page: Page) {
     await acceptButton.click();
   }
 }
+
+export async function denyCookies(page: Page) {
+  const denyButton = page.getByRole("button", {
+    name: "Deny",
+    exact: true,
+  });
+
+  if (await denyButton.isVisible()) {
+    await denyButton.click();
+  }
+}
