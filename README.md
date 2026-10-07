@@ -89,7 +89,7 @@ Run TypeScript type checking:
 npm run typecheck
 ```
 
-```md
+````md
 Before committing changes, run the full validation:
 
 ```bash
@@ -98,6 +98,7 @@ npm run lint
 npm run typecheck
 npx playwright test
 ```
+````
 
 ## CI
 
