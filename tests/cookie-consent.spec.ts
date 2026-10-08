@@ -11,10 +11,14 @@ test.describe("Cookie consent", () => {
     const cookiesBeforeDeny = await context.cookies();
 
     console.log(
-      "GA cookies BEFORE Deny:",
+      "Consent cookies BEFORE Deny:",
       cookiesBeforeDeny
-        .filter((cookie) => cookie.name.startsWith("_ga"))
-        .map((cookie) => cookie.name),
+        .filter(
+          (cookie) =>
+            cookie.name.startsWith("cmplz_") ||
+            cookie.name.startsWith("wp_consent_"),
+        )
+        .map((cookie) => `${cookie.name}=${cookie.value}`),
     );
 
     await denyCookies(page);
