@@ -8,7 +8,25 @@ test.describe("Cookie consent", () => {
   }) => {
     await page.goto("/");
 
+    const cookiesBeforeDeny = await context.cookies();
+
+    console.log(
+      "GA cookies BEFORE Deny:",
+      cookiesBeforeDeny
+        .filter((cookie) => cookie.name.startsWith("_ga"))
+        .map((cookie) => cookie.name),
+    );
+
     await denyCookies(page);
+
+    const cookiesAfterDeny = await context.cookies();
+
+    console.log(
+      "GA cookies AFTER Deny:",
+      cookiesAfterDeny
+        .filter((cookie) => cookie.name.startsWith("_ga"))
+        .map((cookie) => cookie.name),
+    );
 
     const cookies = await context.cookies();
 
