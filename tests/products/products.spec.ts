@@ -27,13 +27,13 @@ test.describe("Get2Pro product pages", () => {
     ).toBeVisible();
     await expect(
       camHolder.getByRole("link", {
-        name: "AVAILABLE SOON AT GOODARCHER.COM",
+        name: "BUY AT GOODARCHER.COM",
         exact: true,
       }),
     ).toBeVisible();
     await expect(
       stabilizerHolder.getByRole("link", {
-        name: "AVAILABLE SOON AT GOODARCHER.COM",
+        name: "BUY AT GOODARCHER.COM",
         exact: true,
       }),
     ).toBeVisible();
@@ -106,13 +106,15 @@ test.describe("Get2Pro product pages", () => {
     await expect(descriptionPanel).toBeVisible();
 
     const goodArcherCta = page.getByRole("button", {
-      name: "AVAILABLE SOON AT GOODARCHER.COM",
+      name: "BUY AT GOODARCHER.COM",
     });
     await expect(goodArcherCta).toBeVisible();
     await expect(goodArcherCta).toHaveAttribute("type", "submit");
-    await expect(goodArcherCta.locator("..").locator("..")).toHaveAttribute(
+
+    const goodArcherForm = goodArcherCta.locator("xpath=ancestor::form");
+    await expect(goodArcherForm).toHaveAttribute(
       "action",
-      "https://goodarcher.com/",
+      "https://goodarcher.com/shop/archers-accessories/quivers-and-pouches/quiver-parts/get2pro-compound-bow-cam-holder/",
     );
 
     await descriptionPanel
@@ -175,13 +177,13 @@ test.describe("Get2Pro product pages", () => {
     await expect(descriptionPanel).toBeVisible();
 
     const goodArcherCta = page.getByRole("button", {
-      name: "AVAILABLE SOON AT GOODARCHER.COM",
+      name: "BUY AT GOODARCHER.COM",
     });
     await expect(goodArcherCta).toBeVisible();
     await expect(goodArcherCta).toHaveAttribute("type", "submit");
     await expect(goodArcherCta.locator("..").locator("..")).toHaveAttribute(
       "action",
-      "https://goodarcher.com/",
+      "https://goodarcher.com/shop/archers-accessories/quivers-and-pouches/quiver-parts/get2pro-compound-bow-stabilizer-holder/",
     );
 
     await descriptionPanel
