@@ -8,6 +8,12 @@ test.describe("Cookie consent", () => {
   }) => {
     await page.goto("/");
 
+    const consentScripts = await page
+      .locator('script[id*="consent-mode"]')
+      .allTextContents();
+
+    console.log("CI Consent Mode scripts:", consentScripts);
+
     const cookiesBeforeDeny = await context.cookies();
 
     console.log(
