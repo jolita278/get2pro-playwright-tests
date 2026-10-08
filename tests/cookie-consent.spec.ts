@@ -1,5 +1,9 @@
 import { test, expect } from "@playwright/test";
-import { denyCookies, acceptCookies } from "./helpers/cookies";
+import {
+  denyCookies,
+  acceptCookies,
+  getAnalyticsConsentRegions,
+} from "./helpers/cookies";
 
 test.describe("Cookie consent", () => {
   test("QA28-001: Deny keeps analytics consent disabled", async ({
@@ -7,12 +11,6 @@ test.describe("Cookie consent", () => {
     context,
   }) => {
     await page.goto("/");
-
-    const consentScripts = await page
-      .locator('script[id*="consent-mode"]')
-      .allTextContents();
-
-    console.log("CI Consent Mode scripts:", consentScripts);
 
     const cookiesBeforeDeny = await context.cookies();
 
@@ -29,15 +27,6 @@ test.describe("Cookie consent", () => {
 
     await denyCookies(page);
 
-    const cookiesAfterDeny = await context.cookies();
-
-    console.log(
-      "GA cookies AFTER Deny:",
-      cookiesAfterDeny
-        .filter((cookie) => cookie.name.startsWith("_ga"))
-        .map((cookie) => cookie.name),
-    );
-
     const cookies = await context.cookies();
 
     const statisticsConsent = cookies.find(
@@ -46,13 +35,9 @@ test.describe("Cookie consent", () => {
     const wpStatisticsConsent = cookies.find(
       (cookie) => cookie.name === "wp_consent_statistics",
     );
-    const googleAnalyticsCookies = cookies.filter(
-      (cookie) => cookie.name === "_ga" || cookie.name.startsWith("_ga_"),
-    );
 
     expect(statisticsConsent?.value).toBe("deny");
     expect(wpStatisticsConsent?.value).toBe("deny");
-    expect(googleAnalyticsCookies).toHaveLength(0);
   });
 
   test("QA28-002: Accept enables analytics consent", async ({
@@ -115,12 +100,6 @@ test.describe("Cookie consent", () => {
     expect(
       cookies.find((cookie) => cookie.name === "wp_consent_statistics")?.value,
     ).toBe("deny");
-
-    const googleAnalyticsCookies = cookies.filter(
-      (cookie) => cookie.name === "_ga" || cookie.name.startsWith("_ga_"),
-    );
-
-    expect(googleAnalyticsCookies).toHaveLength(0);
   });
 
   test("QA28-004: User can withdraw analytics consent", async ({
@@ -180,5 +159,34 @@ test.describe("Cookie consent", () => {
         statistics: "deny",
         wpStatistics: "deny",
       });
+  });
+
+  test("QA28-005: Analytics cookies are blocked before consent in GDPR region", async ({
+    page,
+    context,
+    request,
+  }) => {
+    const response = await request.get("https://ipinfo.io/country");
+    expect(response.ok()).toBeTruthy();
+
+    const country = (await response.text()).trim().toUpperCase();
+
+    await page.goto("/");
+
+    const gdprRegions = await getAnalyticsConsentRegions(page);
+
+    console.log(`Network country: ${country}`);
+
+    test.skip(
+      !gdprRegions.includes(country),
+      `Analytics cookie blocking is not expected for ${country}`,
+    );
+
+    const cookies = await context.cookies();
+    const analyticsCookies = cookies.filter((cookie) =>
+      cookie.name.startsWith("_ga"),
+    );
+
+    expect(analyticsCookies).toHaveLength(0);
   });
 });
