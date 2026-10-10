@@ -89,7 +89,6 @@ Run TypeScript type checking:
 npm run typecheck
 ```
 
-````md
 Before committing changes, run the full validation:
 
 ```bash
@@ -98,7 +97,6 @@ npm run lint
 npm run typecheck
 npx playwright test
 ```
-````
 
 ## CI
 
@@ -128,6 +126,7 @@ retained for the first retry.
 ```text
 .github/workflows/   GitHub Actions workflow
 tests/               Playwright test suites
+tests/helpers/       Shared test helpers
 playwright.config.ts Playwright configuration
 eslint.config.mjs    ESLint configuration
 tsconfig.json        TypeScript configuration
