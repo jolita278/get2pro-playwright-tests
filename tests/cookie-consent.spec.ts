@@ -108,6 +108,7 @@ test.describe("Cookie consent", () => {
   }) => {
     await page.goto("/");
 
+    // Enable analytics consent
     await page.getByRole("button", { name: "View preferences" }).click();
 
     await page.getByRole("checkbox", { name: "Statistics" }).check();
@@ -122,26 +123,42 @@ test.describe("Cookie consent", () => {
       })
       .toBe("allow");
 
+    // Reload the page with saved consent
+    await page.reload();
+
+    // Reopen consent preferences
     const manageConsent = page.getByRole("button", {
       name: "Manage consent",
     });
-
-    await expect(manageConsent).toBeVisible();
-
     await manageConsent.click();
-    await manageConsent.click();
+
+    const banner = page.locator("#cmplz-cookiebanner-1-optin");
+
+    await expect(banner).toBeVisible();
 
     const statisticsCheckbox = page.getByRole("checkbox", {
       name: "Statistics",
     });
+
+    if (!(await statisticsCheckbox.isVisible())) {
+      const viewPreferences = banner.getByRole("button", {
+        name: "View preferences",
+      });
+
+      await expect(viewPreferences).toBeVisible();
+      await viewPreferences.click();
+    }
 
     await expect(statisticsCheckbox).toBeVisible();
     await expect(statisticsCheckbox).toBeChecked();
 
     await statisticsCheckbox.uncheck();
 
+    await expect(statisticsCheckbox).not.toBeChecked();
+
     await page.getByRole("button", { name: "Save preferences" }).click();
 
+    // Verify analytics consent is disabled
     await expect
       .poll(async () => {
         const cookies = await context.cookies();

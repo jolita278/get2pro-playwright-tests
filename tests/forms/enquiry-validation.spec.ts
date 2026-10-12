@@ -40,24 +40,39 @@ test.describe("Get2Pro enquiry validation", () => {
     const submissionPosts: string[] = [];
     page.on("request", (request) => {
       const requestUrl = new URL(request.url());
+
       if (
         request.method() === "POST" &&
         requestUrl.origin === new URL(page.url()).origin &&
         requestUrl.pathname === "/wp-admin/admin-ajax.php"
       ) {
-        submissionPosts.push(request.url());
+        const postData = request.postData() ?? "";
+        const params = new URLSearchParams(postData);
+
+        if (params.get("action") !== "wpforms_get_token") {
+          submissionPosts.push(request.url());
+        }
       }
     });
 
     await form.getByRole("button", { name: "Submit", exact: true }).click();
+    await expect
+      .poll(async () => {
+        return form.locator(".wpforms-error, [role='alert']").count();
+      })
+      .toBeGreaterThan(0);
+
+    await expect(productChoice).toHaveAttribute("aria-describedby", /-error$/);
 
     const productErrorId = await productChoice.getAttribute("aria-describedby");
-    if (!productErrorId) {
-      throw new Error("Products of interest checkbox has no described error");
-    }
+    expect(productErrorId).not.toBeNull();
+
     const productError = productField.locator(`[id="${productErrorId}"]`);
+
+    await expect(productError).toBeVisible();
     await expect(productError).toHaveAttribute("role", "alert");
     await expect(productError).toHaveText(requiredMessage);
+
     await expect(deliveryCountry).toHaveClass(/wpforms-error/);
     await expect(
       form.locator(
@@ -100,12 +115,18 @@ test.describe("Get2Pro enquiry validation", () => {
     const submissionPosts: string[] = [];
     page.on("request", (request) => {
       const requestUrl = new URL(request.url());
+
       if (
         request.method() === "POST" &&
         requestUrl.origin === new URL(page.url()).origin &&
         requestUrl.pathname === "/wp-admin/admin-ajax.php"
       ) {
-        submissionPosts.push(request.url());
+        const postData = request.postData() ?? "";
+        const params = new URLSearchParams(postData);
+
+        if (params.get("action") !== "wpforms_get_token") {
+          submissionPosts.push(request.url());
+        }
       }
     });
 

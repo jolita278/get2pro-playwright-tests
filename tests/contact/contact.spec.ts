@@ -43,10 +43,14 @@ test.describe("Get2Pro Contact page", () => {
         requestUrl.origin === new URL(page.url()).origin &&
         requestUrl.pathname === "/wp-admin/admin-ajax.php"
       ) {
-        submissionPosts.push(request.url());
+        const postData = request.postData() ?? "";
+        const params = new URLSearchParams(postData);
+
+        if (params.get("action") !== "wpforms_get_token") {
+          submissionPosts.push(request.url());
+        }
       }
     });
-
     await form
       .getByRole("button", {
         name: "Send Message",
@@ -86,7 +90,12 @@ test.describe("Get2Pro Contact page", () => {
         requestUrl.origin === new URL(page.url()).origin &&
         requestUrl.pathname === "/wp-admin/admin-ajax.php"
       ) {
-        submissionPosts.push(request.url());
+        const postData = request.postData() ?? "";
+        const params = new URLSearchParams(postData);
+
+        if (params.get("action") !== "wpforms_get_token") {
+          submissionPosts.push(request.url());
+        }
       }
     });
 

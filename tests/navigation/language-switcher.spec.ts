@@ -28,7 +28,8 @@ test.describe("Get2Pro language switching @smoke", () => {
     await expect(lithuanianLink).toBeVisible();
     await lithuanianLink.click();
 
-    await expect(page).toHaveURL(/\/lt\/$/);
+    await expect(page).toHaveURL((url) => url.pathname === "/lt/");
+
     await expect(
       page.getByRole("heading", {
         name: "Sveiki atvykę ten, kur aistra susitinka su tikslumu!",
@@ -47,7 +48,7 @@ test.describe("Get2Pro language switching @smoke", () => {
     await expect(englishLink).toBeVisible();
     await englishLink.click();
 
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL((url) => url.pathname === "/");
     await expect(
       page.getByRole("heading", {
         name: "Welcome to where passion meets precision!",
