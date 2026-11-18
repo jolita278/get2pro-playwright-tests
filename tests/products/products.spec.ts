@@ -21,9 +21,9 @@ test.describe("Get2Pro product pages", () => {
 
     await expect(camHolder).toBeVisible();
     await expect(stabilizerHolder).toBeVisible();
-    await expect(camHolder.getByText("30.00€", { exact: true })).toBeVisible();
+    await expect(camHolder.getByText("39.00€", { exact: true })).toBeVisible();
     await expect(
-      stabilizerHolder.getByText("30.00€", { exact: true }),
+      stabilizerHolder.getByText("39.00€", { exact: true }),
     ).toBeVisible();
     await expect(
       camHolder.getByRole("link", {
@@ -78,7 +78,7 @@ test.describe("Get2Pro product pages", () => {
       })
       .locator("..");
     await expect(
-      productSummary.getByText("30.00€", { exact: true }),
+      productSummary.getByText("39.00€", { exact: true }),
     ).toBeVisible();
     await expect(
       page
@@ -151,7 +151,7 @@ test.describe("Get2Pro product pages", () => {
       })
       .locator("..");
     await expect(
-      productSummary.getByText("30.00€", { exact: true }),
+      productSummary.getByText("39.00€", { exact: true }),
     ).toBeVisible();
     await expect(
       page

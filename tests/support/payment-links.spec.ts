@@ -5,7 +5,7 @@ test.describe("Get2Pro donation payment links", () => {
   test("QA11-001: validate current €5 and €10 Swedbank payment links", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/support-us/");
 
     await acceptCookies(page);
 
@@ -33,11 +33,13 @@ test.describe("Get2Pro donation payment links", () => {
       }
     });
 
-    expect(paymentUrls).toHaveLength(2);
+    const uniquePaymentUrls = [...new Set(paymentUrls)];
+
+    expect(uniquePaymentUrls).toHaveLength(2);
 
     const verifiedAmounts: number[] = [];
 
-    for (const paymentUrl of paymentUrls) {
+    for (const paymentUrl of uniquePaymentUrls) {
       const paymentPage = await page.context().newPage();
       try {
         const response = await paymentPage.goto(paymentUrl);

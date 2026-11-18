@@ -11,7 +11,7 @@ test.describe("Get2Pro homepage smoke tests @smoke", () => {
   test("HOME-001: welcome page loads and main content is visible", async ({
     page,
   }) => {
-    await expect(page).toHaveTitle(/Welcome/i);
+    await expect(page).toHaveTitle(/Home/i);
     await expect(page.getByRole("main")).toBeVisible();
     await expect(
       page.getByRole("heading", {
@@ -26,10 +26,10 @@ test.describe("Get2Pro homepage smoke tests @smoke", () => {
   }) => {
     const mainMenu = page.getByRole("navigation", { name: "Main Menu" });
     await expect(
-      mainMenu.getByRole("link", { name: "Welcome", exact: true }),
+      mainMenu.getByRole("link", { name: "Home", exact: true }),
     ).toBeVisible();
     await expect(
-      mainMenu.getByRole("link", { name: "Products", exact: true }),
+      mainMenu.getByRole("link", { name: "Handmade Products", exact: true }),
     ).toBeVisible();
     await expect(
       mainMenu.getByRole("link", { name: "News & Updates", exact: true }),
@@ -41,7 +41,7 @@ test.describe("Get2Pro homepage smoke tests @smoke", () => {
 
   test("HOME-003: Top Products section is visible", async ({ page }) => {
     await expect(
-      page.getByRole("heading", { name: "Top Products", level: 2 }),
+      page.getByRole("heading", { name: "Our Handmade Products", level: 2 }),
     ).toBeVisible();
   });
 
@@ -115,12 +115,6 @@ test.describe("Get2Pro homepage smoke tests @smoke", () => {
     await expect(page).toHaveURL(/\/news-and-updates\//);
     await expect(
       page.getByRole("heading", { name: "News & Updates", level: 1 }),
-    ).toBeVisible();
-  });
-
-  test("HOME-009: Support section is visible", async ({ page }) => {
-    await expect(
-      page.getByRole("heading", { name: "Support us", level: 2 }),
     ).toBeVisible();
   });
 });

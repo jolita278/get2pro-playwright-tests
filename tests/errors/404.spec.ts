@@ -15,7 +15,7 @@ test.describe("Get2Pro 404 handling", () => {
       }),
     ).toBeVisible();
 
-    await page.getByRole("link", { name: "Products", exact: true }).click();
+    await page.getByRole("link", { name: "Handmade Products", exact: true }).click();
 
     await expect(page).toHaveURL("/products/");
   });

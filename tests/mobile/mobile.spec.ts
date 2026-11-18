@@ -19,7 +19,7 @@ test.describe("Get2Pro mobile coverage", () => {
 
     await expect(
       page.getByRole("heading", {
-        name: "Top Products",
+        name: "Our Handmade Products",
       }),
     ).toBeVisible();
   });

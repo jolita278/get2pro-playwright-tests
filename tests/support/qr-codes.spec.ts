@@ -6,25 +6,16 @@ test.describe("Get2Pro Support QR codes", () => {
   test("QA12-001: verify Support QR codes match their payment links", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/support-us/");
 
     await acceptCookies(page);
 
-    const supportSection = page.locator("section").filter({
-      has: page.getByRole("heading", {
-        name: "Support us",
-        level: 2,
-      }),
-    });
+    const donationWidgets = page
+      .locator('a[href^="https://pi.swedbank.com/pr"]')
+      .filter({ has: page.locator('img[alt^="QR code for a"]') })
+      .locator("..");
 
-    await expect(supportSection).toBeVisible();
-
-    const donationWidgets = supportSection
-      .locator(".elementor-widget-text-editor")
-      .filter({ has: page.locator("img") })
-      .filter({
-        has: page.getByRole("link").filter({ hasText: "pi.swedbank.com/pr" }),
-      });
+    await expect(donationWidgets).toHaveCount(2);
 
     await expect(donationWidgets).toHaveCount(2);
 
@@ -32,9 +23,11 @@ test.describe("Get2Pro Support QR codes", () => {
     for (const widget of await donationWidgets.all()) {
       const image = widget.locator("img");
       await expect(image).toHaveCount(1);
-      const paymentLink = widget.getByRole("link").filter({
-        hasText: "pi.swedbank.com/pr",
+      const paymentLink = widget.getByRole("link", {
+        name: /Donate €(?:5|10) via Swedbank/,
       });
+
+      await expect(paymentLink).toHaveCount(1);
       await expect(paymentLink).toHaveCount(1);
 
       const qrImage = await image.screenshot();
